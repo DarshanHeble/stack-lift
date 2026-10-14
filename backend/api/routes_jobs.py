@@ -6,6 +6,7 @@ Handles:
 - State transitions with Optimistic Concurrency Control (OCC).
 """
 
+from typing import List
 from fastapi import APIRouter, Depends, status, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -64,6 +65,13 @@ async def create_job(
     background_tasks.add_task(run_modernization_pipeline, job.id)
 
     return job
+
+
+@router.get("", response_model=List[JobResponse])
+async def list_jobs(db: AsyncSession = Depends(get_db)):
+    """Lists all modernization jobs across all projects."""
+    result = await db.execute(select(ModernizationJob).order_by(ModernizationJob.started_at.desc()))
+    return result.scalars().all()
 
 
 @router.get("/{job_id}", response_model=JobResponse)

@@ -3,8 +3,16 @@ import { jobsApi } from '@/api/jobs';
 import type { JobCreate } from '@/types/api';
 
 export const jobKeys = {
+  all: ['jobs'] as const,
   detail: (jobId: string) => ['job', jobId] as const,
 };
+
+export function useAllJobsQuery() {
+  return useQuery({
+    queryKey: jobKeys.all,
+    queryFn: () => jobsApi.list(),
+  });
+}
 
 export function useJobQuery(jobId?: string | null) {
   return useQuery({

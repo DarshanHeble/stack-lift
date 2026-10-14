@@ -10,24 +10,34 @@ interface ArchitectureViewProps {
 }
 
 export const ArchitectureView: React.FC<ArchitectureViewProps> = ({ onBack, project = null }) => {
+  const projectName = project?.name || 'Legacy Reactive Service';
+  const branch = project?.default_branch || 'master';
+  const source = project?.repo_source || 'ZIP_UPLOAD';
+
   const handleExportTopology = () => {
     const topologyData = {
       timestamp: new Date().toISOString(),
+      project: {
+        id: project?.id,
+        name: projectName,
+        branch,
+        source,
+      },
       nodes: [
-        { id: 'api-gateway', type: 'GATEWAY', framework: 'Spring Cloud Gateway', status: 'MODERN' },
-        { id: 'order-service', type: 'SERVICE', framework: 'Spring Boot 2.1.8', status: 'MIGRATING', cves: 5 },
-        { id: 'postgres-primary', type: 'DATABASE', framework: 'PostgreSQL 16', status: 'MODERN' },
+        { id: `${projectName.toLowerCase().replace(/[^a-z0-9]/g, '-')}-edge`, type: 'GATEWAY', framework: 'Spring Cloud Gateway / WebFlux', runtime: 'Java 17 LTS', status: 'MODERN' },
+        { id: `${projectName.toLowerCase().replace(/[^a-z0-9]/g, '-')}-core`, type: 'SERVICE', framework: 'Spring Boot 2.2.5.RELEASE', runtime: 'Java 11', status: 'MIGRATING' },
+        { id: `${projectName.toLowerCase().replace(/[^a-z0-9]/g, '-')}-db`, type: 'PERSISTENCE', framework: 'PostgreSQL R2DBC Cluster', status: 'CONNECTED' },
       ],
       edges: [
-        { from: 'api-gateway', to: 'order-service', protocol: 'mTLS / gRPC' },
-        { from: 'order-service', to: 'postgres-primary', protocol: 'JDBC' },
+        { from: 'edge', to: 'core', protocol: 'HTTP/2 / WebFlux Reactive Stream' },
+        { from: 'core', to: 'db', protocol: 'R2DBC Non-blocking Connection Pool' },
       ],
     };
     const blob = new Blob([JSON.stringify(topologyData, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = 'architecture-topology.json';
+    link.download = `${project?.name ? project.name.toLowerCase().replace(/[^a-z0-9]/g, '-') : 'architecture'}-topology.json`;
     link.click();
     URL.revokeObjectURL(url);
   };

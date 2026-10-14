@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DashboardView } from '@/views/dashboard/DashboardView';
-import { useProjectsQuery, useCreateProjectMutation } from '@/hooks/queries';
+import { useProjectsQuery, useCreateProjectMutation, useAllJobsQuery } from '@/hooks/queries';
 import { projectsApi } from '@/api/projects';
 import { useUIStore } from '@/store';
 import type { ProjectCreate } from '@/types/api';
@@ -10,16 +10,18 @@ export const DashboardPage: React.FC = () => {
   const navigate = useNavigate();
   const { setSelectedProjectId, setActiveJobId, setActiveStepId } = useUIStore();
   const { data: serverProjects } = useProjectsQuery();
+  const { data: serverJobs } = useAllJobsQuery();
   const createProjectMutation = useCreateProjectMutation();
 
   const projects = serverProjects || [];
+  const jobs = serverJobs || [];
 
   const handleSelectProject = async (projectId: string) => {
     setSelectedProjectId(projectId);
     try {
-      const jobs = await projectsApi.getJobs(projectId);
-      if (jobs && jobs.length > 0) {
-        const latest = jobs[0];
+      const pJobs = await projectsApi.getJobs(projectId);
+      if (pJobs && pJobs.length > 0) {
+        const latest = pJobs[0];
         setActiveJobId(latest.id);
         setActiveStepId(`${latest.id}-step-1`);
       }
@@ -45,6 +47,7 @@ export const DashboardPage: React.FC = () => {
   return (
     <DashboardView
       projects={projects}
+      jobs={jobs}
       onSelectProject={handleSelectProject}
       onCreateProject={handleCreateProject}
     />
