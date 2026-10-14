@@ -1,0 +1,35 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+
+# Node & Frontend
+node_modules/
+frontend/node_modules/
+frontend/dist/
+dist/
+build/
+.pnpm-store/
+
+# IDE & OS
+.DS_Store
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# Local databases & runtimes
+*.db
+*.sqlite
+*.sqlite3
+*.log
+
+# Temp & Workspaces
+workspaces/
+.stacklift/

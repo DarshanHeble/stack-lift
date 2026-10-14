@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  # 1. PostgreSQL 16 Primary Relational Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: stacklift-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_DB: stacklift
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # 2. Redis Event Broker & Job Queue
+  redis:
+    image: redis:7-alpine
+    container_name: stacklift-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # 3. FastAPI Modernization API Gateway
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: stacklift-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+asyncpg://postgres:postgrespassword@postgres:5432/stacklift
+      REDIS_URL: redis://redis:6379/0
+      API_V1_PREFIX: /api/v1
+      WORKSPACE_STORAGE_PATH: /tmp/stacklift/workspaces
+      ARTIFACT_STORAGE_PATH: /tmp/stacklift/artifacts
+    ports:
+      - "8000:8000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - workspace_data:/tmp/stacklift
+
+  # 4. Vite React SPA Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.frontend
+    container_name: stacklift-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "5173:5173"
+
+volumes:
+  postgres_data:
+  redis_data:
+  workspace_data:

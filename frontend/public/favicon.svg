@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="40" height="40" fill="none">
+  <!-- Gradient Definitions -->
+  <defs>
+    <linearGradient id="stacklift-grad-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#818CF8" />
+      <stop offset="50%" stop-color="#6366F1" />
+      <stop offset="100%" stop-color="#4F46E5" />
+    </linearGradient>
+    <linearGradient id="stacklift-grad-accent" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06B6D4" />
+      <stop offset="100%" stop-color="#818CF8" />
+    </linearGradient>
+    <linearGradient id="stacklift-grad-base" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#312E81" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#1E1B4B" stop-opacity="0.9" />
+    </linearGradient>
+    <filter id="stacklift-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#6366F1" flood-opacity="0.35" />
+    </filter>
+  </defs>
+
+  <!-- Foundation Plate (Legacy Anchor) -->
+  <path d="M 6 28 L 20 35 L 34 28 L 20 21 Z" fill="url(#stacklift-grad-base)" stroke="#4338CA" stroke-width="1.2" stroke-linejoin="round" />
+
+  <!-- Intermediate Plate (Refactoring Tier) -->
+  <path d="M 8 20 L 20 26 L 32 20 L 20 14 Z" fill="#3730A3" fill-opacity="0.85" stroke="#6366F1" stroke-width="1.2" stroke-linejoin="round" />
+
+  <!-- Elevated Top Plate (Modernized Stack) with Lift Chevron Effect -->
+  <g filter="url(#stacklift-glow)">
+    <path d="M 10 12 L 20 17 L 30 12 L 20 7 Z" fill="url(#stacklift-grad-primary)" stroke="#C7D2FE" stroke-width="1.5" stroke-linejoin="round" />
+    <!-- Dynamic Upward Vector / Ascent Beacon -->
+    <path d="M 20 4 L 20 11 M 16.5 7.5 L 20 4 L 23.5 7.5" stroke="url(#stacklift-grad-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+</svg>

@@ -1,0 +1,207 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   STACKLIFT THEME: LIGHT & DARK MODE CSS VARIABLES (RADIX / SHADCN COMPLIANT)
+   ========================================================================== */
+
+:root {
+  /* Surface & Canvas (Light) - Clean contrast between canvas and cards */
+  --surface-canvas: #F4F5F7;
+  --surface-card: #FFFFFF;
+  --surface-subtle: #ECEEF2;
+  --surface-hover: #F8F9FA;
+  --surface-active: #E4E7EC;
+  --surface-sidebar: #FFFFFF;
+
+  /* Borders & Dividers (Light) - Crisp, well-defined boundaries */
+  --border-subtle: #E9ECEF;
+  --border-default: #D8DCE3;
+  --border-strong: #B0B7C3;
+  --border-focus: #111827;
+
+  /* Typography Colors (Light) - High contrast, legible typography */
+  --text-primary: #0F172A;
+  --text-secondary: #334155;
+  --text-muted: #64748B;
+  --text-disabled: #94A3B8;
+  --text-inverse: #FFFFFF;
+
+  /* Brand / Primary Actions */
+  --brand-primary: #0F172A;
+  --brand-primary-hover: #1E293B;
+  --brand-primary-active: #020617;
+  --brand-accent: #2563EB;
+
+  /* Status Colors */
+  --status-success-text: #065F46;
+  --status-success-bg: #ECFDF5;
+  --status-success-border: #A7F3D0;
+  --status-success-dot: #10B981;
+
+  --status-progress-text: #0F766E;
+  --status-progress-bg: #F0FDFA;
+  --status-progress-border: #99F6E4;
+  --status-progress-dot: #14B8A6;
+
+  --status-purple-text: #5B21B6;
+  --status-purple-bg: #F5F3FF;
+  --status-purple-border: #DDD6FE;
+  --status-purple-dot: #8B5CF6;
+
+  --status-warning-text: #92400E;
+  --status-warning-bg: #FFFBEB;
+  --status-warning-border: #FDE68A;
+  --status-warning-accent: #F59E0B;
+
+  --status-danger-text: #9F1239;
+  --status-danger-bg: #FFF1F2;
+  --status-danger-border: #FECDD3;
+  --status-danger-dot: #F43F5E;
+
+  --status-neutral-text: #334155;
+  --status-neutral-bg: #F1F5F9;
+  --status-neutral-border: #E2E8F0;
+  --status-neutral-dot: #94A3B8;
+
+  /* Elevation Shadows (Crisp & layered) */
+  --shadow-subtle: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+  --shadow-card: 0 1px 3px 0 rgba(15, 23, 42, 0.07), 0 1px 2px -1px rgba(15, 23, 42, 0.05);
+  --shadow-dropdown: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
+
+  /* Border Radii */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
+}
+
+/* ==========================================================================
+   DARK MODE OVERRIDES (.dark class on <html> or <body>)
+   ========================================================================== */
+
+.dark {
+  /* Dark Surfaces (Linear / Premium Developer SaaS: #0B0F19, #111827, #151B2B, #1C2538) */
+  --surface-canvas: #0B0F19;
+  --surface-card: #111827;
+  --surface-subtle: #151B2B;
+  --surface-hover: #1C2538;
+  --surface-active: #232E45;
+  --surface-sidebar: #0E1322;
+
+  /* Dark Borders (#2B3548) */
+  --border-subtle: #1E2638;
+  --border-default: #2B3548;
+  --border-strong: #3D4B66;
+  --border-focus: #818CF8;
+
+  /* Dark Typography (#F8FAFC, #94A3B8) */
+  --text-primary: #F8FAFC;
+  --text-secondary: #CBD5E1;
+  --text-muted: #94A3B8;
+  --text-disabled: #64748B;
+  --text-inverse: #0B0F19;
+
+  /* Brand / Primary in Dark - Indigo accent #818CF8 */
+  --brand-primary: #818CF8;
+  --brand-primary-hover: #6366F1;
+  --brand-primary-active: #4F46E5;
+  --brand-accent: #818CF8;
+
+  /* Status Colors in Dark */
+  --status-success-text: #4ADE80;
+  --status-success-bg: rgba(34, 197, 94, 0.12);
+  --status-success-border: rgba(34, 197, 94, 0.28);
+  --status-success-dot: #22C55E;
+
+  --status-progress-text: #38BDF8;
+  --status-progress-bg: rgba(56, 189, 248, 0.12);
+  --status-progress-border: rgba(56, 189, 248, 0.28);
+  --status-progress-dot: #0EA5E9;
+
+  --status-purple-text: #A78BFA;
+  --status-purple-bg: rgba(129, 140, 248, 0.14);
+  --status-purple-border: rgba(129, 140, 248, 0.32);
+  --status-purple-dot: #818CF8;
+
+  --status-warning-text: #FBBF24;
+  --status-warning-bg: rgba(245, 158, 11, 0.12);
+  --status-warning-border: rgba(245, 158, 11, 0.28);
+  --status-warning-accent: #F59E0B;
+
+  --status-danger-text: #F87171;
+  --status-danger-bg: rgba(248, 113, 113, 0.12);
+  --status-danger-border: rgba(248, 113, 113, 0.28);
+  --status-danger-dot: #EF4444;
+
+  --status-neutral-text: #94A3B8;
+  --status-neutral-bg: #151B2B;
+  --status-neutral-border: #2B3548;
+  --status-neutral-dot: #64748B;
+
+  /* Dark Shadows */
+  --shadow-subtle: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+  --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px -1px rgba(0, 0, 0, 0.2);
+  --shadow-dropdown: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
+}
+
+/* ==========================================================================
+   GLOBAL RESET & BASE STYLES
+   Placed in @layer base so utility classes (like padding, margin) take precedence
+   ========================================================================== */
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Plus Jakarta Sans', 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--surface-canvas);
+    color: var(--text-primary);
+    line-height: 1.5;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Common Headings */
+h1, .text-display-h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+}
+
+h2, .text-display-h2 {
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+
+h3, .text-display-h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+p, .text-body {
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.text-body-sm {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.text-caption {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
