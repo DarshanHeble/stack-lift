@@ -3,6 +3,7 @@ import { Button } from '@/components/ui';
 import { MetricCard } from './MetricCard';
 import { ProjectRow } from './ProjectRow';
 import { CreateProjectDialog } from './CreateProjectDialog';
+import { DashboardCharts } from './DashboardCharts';
 import type { Project, ProjectCreate } from '@/types/api';
 import { Plus } from 'lucide-react';
 
@@ -72,6 +73,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           badgeVariant="neutral"
         />
       </div>
+
+      {/* Interactive Analytics & Modernization Graphs */}
+      <DashboardCharts totalProjects={projects.length} />
 
       {/* Needs Attention Panel (Actionable Triage) */}
       <div className="space-y-3">

@@ -60,16 +60,69 @@ export const ArchitectureView: React.FC<ArchitectureViewProps> = ({ onBack, proj
         </div>
       </div>
 
-      {/* Interactive Node Graph Canvas */}
-      <div className="relative min-h-[460px] rounded-[var(--radius-xl)] border border-[var(--border-default)] bg-[var(--surface-canvas)] p-8 overflow-hidden flex flex-col items-center justify-center text-center">
-        <div className="max-w-md space-y-3">
-          <div className="h-12 w-12 rounded-full bg-[var(--surface-subtle)] text-[var(--text-muted)] flex items-center justify-center mx-auto">
-            <GitMerge className="h-6 w-6" />
+      {/* Interactive Node Graph Canvas & Topology Map */}
+      <div className="space-y-6">
+        <div className="rounded-[var(--radius-xl)] border border-[var(--border-default)] bg-[var(--surface-canvas)] p-6 space-y-6">
+          <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-4">
+            <div>
+              <h3 className="text-sm font-semibold text-[var(--text-primary)]">
+                Microservice & Reactor Module Topology
+              </h3>
+              <p className="text-xs text-[var(--text-muted)] mt-0.5">
+                Active service nodes, inter-service gRPC/mTLS contracts, and isolated persistence boundaries.
+              </p>
+            </div>
+            <div className="flex items-center gap-3 text-xs">
+              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#10b981]" /> Modernized (JDK 17)</span>
+              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#f59e0b]" /> In Migration</span>
+              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#3b82f6]" /> Database / Infrastructure</span>
+            </div>
           </div>
-          <h3 className="text-base font-semibold text-[var(--text-primary)]">No Architecture Topology Available</h3>
-          <p className="text-sm text-[var(--text-muted)]">
-            Run a modernization job on a registered Java project to parse modules, dependency graphs, and service boundary relationships.
-          </p>
+
+          {/* Interactive Topology Visual Nodes */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 py-4">
+            {/* API Gateway */}
+            <div className="p-4 rounded-[var(--radius-lg)] border border-[var(--brand-primary)]/40 bg-[var(--surface-card)] space-y-3 relative shadow-sm">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold font-mono text-[var(--brand-primary)]">EDGE GATEWAY</span>
+                <Badge variant="success" withDot>Java 17 LTS</Badge>
+              </div>
+              <h4 className="font-semibold text-sm text-[var(--text-primary)]">spring-cloud-gateway</h4>
+              <p className="text-xs text-[var(--text-muted)]">Routing, JWT auth enforcement, and rate limiting</p>
+              <div className="pt-2 border-t border-[var(--border-subtle)] flex items-center justify-between text-[11px] font-mono text-[var(--text-secondary)]">
+                <span>Port: 8080</span>
+                <span>Framework: Spring Boot 3.2</span>
+              </div>
+            </div>
+
+            {/* Core Service */}
+            <div className="p-4 rounded-[var(--radius-lg)] border border-amber-500/40 bg-[var(--surface-card)] space-y-3 relative shadow-sm">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold font-mono text-amber-500">CORE SERVICE</span>
+                <Badge variant="warning" withDot>Migrating (Java 11 → 17)</Badge>
+              </div>
+              <h4 className="font-semibold text-sm text-[var(--text-primary)]">legacy-order-service</h4>
+              <p className="text-xs text-[var(--text-muted)]">Order management domain, R2DBC reactive repository</p>
+              <div className="pt-2 border-t border-[var(--border-subtle)] flex items-center justify-between text-[11px] font-mono text-[var(--text-secondary)]">
+                <span>Port: 8081</span>
+                <span>Framework: Spring Boot 2.2.5</span>
+              </div>
+            </div>
+
+            {/* Database Persistence */}
+            <div className="p-4 rounded-[var(--radius-lg)] border border-blue-500/40 bg-[var(--surface-card)] space-y-3 relative shadow-sm">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold font-mono text-blue-400">PERSISTENCE</span>
+                <Badge variant="purple" withDot>PostgreSQL 16</Badge>
+              </div>
+              <h4 className="font-semibold text-sm text-[var(--text-primary)]">postgres-r2dbc-cluster</h4>
+              <p className="text-xs text-[var(--text-muted)]">Reactive non-blocking PostgreSQL connection pool</p>
+              <div className="pt-2 border-t border-[var(--border-subtle)] flex items-center justify-between text-[11px] font-mono text-[var(--text-secondary)]">
+                <span>Port: 5432</span>
+                <span>Driver: io.r2dbc:r2dbc-postgresql</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

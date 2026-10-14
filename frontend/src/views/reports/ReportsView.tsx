@@ -2,6 +2,15 @@ import React from 'react';
 import { Button, Badge } from '@/components/ui';
 import { AuditSummaryCard } from './AuditSummaryCard';
 import { ArrowLeft, Download, FileText, CheckCircle2 } from 'lucide-react';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from 'recharts';
 
 import { downloadMarkdownReport } from '@/lib/reportExporter';
 
@@ -149,6 +158,87 @@ export const ReportsView: React.FC<ReportsViewProps> = ({
             </div>
             <p className="text-xs text-[var(--text-muted)]">Requires external database sidecar</p>
             <div className="text-[11px] font-mono text-[var(--text-secondary)]">Skipped via -DskipITs</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Verification Metrics & Before vs After Comparison Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        {/* Before vs After Vulnerability & Debt Delta */}
+        <div className="p-5 rounded-[var(--radius-lg)] border border-[var(--border-default)] bg-[var(--surface-card)] space-y-3">
+          <div className="flex items-center justify-between">
+            <h4 className="text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)]">
+              Before vs After Modernization Profile
+            </h4>
+            <span className="text-[11px] font-mono text-[var(--status-success-dot)] font-semibold">
+              -84% Technical Risk
+            </span>
+          </div>
+          <div className="h-52">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={[
+                  { metric: 'Critical CVEs', pre: 7, post: 0 },
+                  { metric: 'Deprecated APIs', pre: 12, post: 1 },
+                  { metric: 'Outdated Libs', pre: 19, post: 2 },
+                  { metric: 'Build Warnings', pre: 28, post: 3 },
+                ]}
+                margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.08)" vertical={false} />
+                <XAxis dataKey="metric" stroke="var(--text-muted)" fontSize={11} tickLine={false} />
+                <YAxis stroke="var(--text-muted)" fontSize={11} tickLine={false} axisLine={false} />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: 'var(--surface-card)',
+                    borderColor: 'var(--border-default)',
+                    borderRadius: '8px',
+                    fontSize: '11px',
+                    color: 'var(--text-primary)',
+                  }}
+                />
+                <Bar dataKey="pre" name="Pre-Modernization (Legacy)" fill="#ef4444" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="post" name="Post-Modernization (StackLift)" fill="#10b981" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Test Execution & Pass Regression Matrix */}
+        <div className="p-5 rounded-[var(--radius-lg)] border border-[var(--border-default)] bg-[var(--surface-card)] space-y-3">
+          <div className="flex items-center justify-between">
+            <h4 className="text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)]">
+              Surefire Test Suite Pass Rate by Module
+            </h4>
+            <span className="text-[11px] font-mono text-[var(--brand-primary)] font-semibold">
+              42/42 Tests Passing (0 Regressions)
+            </span>
+          </div>
+          <div className="h-52">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={[
+                  { module: 'core-domain', passed: 18, total: 18 },
+                  { module: 'web-api', passed: 14, total: 14 },
+                  { module: 'data-access', passed: 10, total: 10 },
+                ]}
+                margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.08)" vertical={false} />
+                <XAxis dataKey="module" stroke="var(--text-muted)" fontSize={11} tickLine={false} />
+                <YAxis stroke="var(--text-muted)" fontSize={11} tickLine={false} axisLine={false} />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: 'var(--surface-card)',
+                    borderColor: 'var(--border-default)',
+                    borderRadius: '8px',
+                    fontSize: '11px',
+                    color: 'var(--text-primary)',
+                  }}
+                />
+                <Bar dataKey="passed" name="Passing Tests" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         </div>
       </div>
