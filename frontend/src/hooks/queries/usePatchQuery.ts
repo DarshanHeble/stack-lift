@@ -11,6 +11,11 @@ export function usePatchByStepQuery(stepId?: string | null) {
     queryKey: patchKeys.byStep(stepId || ''),
     queryFn: () => patchesApi.getByStepId(stepId!),
     enabled: Boolean(stepId),
+    retry: (failureCount, error: any) => {
+      // Do not retry 404s (e.g., when a pending step doesn't have an generated patch yet)
+      if (error?.response?.status === 404 || error?.status === 404) return false;
+      return failureCount < 2;
+    },
   });
 }
 

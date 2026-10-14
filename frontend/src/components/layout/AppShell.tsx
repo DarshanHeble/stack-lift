@@ -58,9 +58,22 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (!isDragging.current) return;
-      const delta = e.clientX - startX.current;
-      const newWidth = Math.max(220, Math.min(440, startWidth.current + delta));
-      setSidebarWidth(newWidth);
+      const currentX = e.clientX;
+      
+      // If dragged below 150px, collapse to compact mode
+      if (currentX < 150) {
+        if (!useUIStore.getState().isSidebarCollapsed) {
+          useUIStore.getState().setSidebarCollapsed(true);
+        }
+      } else {
+        // Dragged past 180px, ensure it is expanded and clamp between 220px and 440px
+        if (useUIStore.getState().isSidebarCollapsed) {
+          useUIStore.getState().setSidebarCollapsed(false);
+        }
+        const delta = currentX - startX.current;
+        const newWidth = Math.max(220, Math.min(440, startWidth.current + delta));
+        setSidebarWidth(newWidth);
+      }
     };
 
     const handleMouseUp = () => {
@@ -84,7 +97,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
     e.preventDefault();
     isDragging.current = true;
     startX.current = e.clientX;
-    startWidth.current = sidebarWidth;
+    startWidth.current = isSidebarCollapsed ? 76 : sidebarWidth;
     setIsResizing(true);
     document.body.style.cursor = 'col-resize';
     document.body.style.userSelect = 'none';
@@ -110,20 +123,41 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
     <div className="flex h-screen w-screen overflow-hidden bg-[var(--surface-canvas)] text-[var(--text-primary)] transition-colors">
       {/* Sidebar Container */}
       <aside
-        style={{ width: isSidebarCollapsed ? 76 : sidebarWidth }}
-        className={`relative flex flex-col justify-between border-r border-[var(--border-default)] bg-[var(--surface-card)] p-3 select-none shrink-0 transition-[width] ${
+        style={{ width: isSidebarCollapsed ? 72 : sidebarWidth }}
+        className={`relative flex flex-col justify-between border-r border-[var(--border-default)] bg-[var(--surface-card)] ${
+          isSidebarCollapsed ? 'px-2 py-3 items-center' : 'p-3'
+        } select-none shrink-0 transition-[width] ${
           isResizing ? 'transition-none' : 'duration-200 ease-in-out'
         }`}
       >
-        <div className="space-y-4">
+        <div className="w-full space-y-4">
           {/* Header & Brand Logo */}
-          <div className="flex items-center justify-between px-1.5 py-1">
-            <div
-              onClick={() => navigate('/')}
-              className="flex items-center gap-2.5 cursor-pointer group min-w-0"
-            >
-              <Logo size={32} className="transition-transform group-hover:scale-105 shrink-0" />
-              {!isSidebarCollapsed && (
+          {isSidebarCollapsed ? (
+            <div className="flex flex-col items-center gap-2 pb-1">
+              <Tooltip content="StackLift Home">
+                <div
+                  onClick={() => navigate('/')}
+                  className="cursor-pointer group flex items-center justify-center p-1 rounded-[var(--radius-md)] hover:bg-[var(--surface-hover)] transition-colors"
+                >
+                  <Logo size={28} className="transition-transform group-hover:scale-105" />
+                </div>
+              </Tooltip>
+              <Tooltip content="Expand Sidebar">
+                <button
+                  onClick={toggleSidebarCollapsed}
+                  className="h-7 w-7 rounded-[var(--radius-md)] flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-hover)] transition-colors cursor-pointer"
+                >
+                  <PanelLeft className="h-4 w-4" />
+                </button>
+              </Tooltip>
+            </div>
+          ) : (
+            <div className="flex items-center justify-between px-1.5 py-1">
+              <div
+                onClick={() => navigate('/')}
+                className="flex items-center gap-2.5 cursor-pointer group min-w-0"
+              >
+                <Logo size={32} className="transition-transform group-hover:scale-105 shrink-0" />
                 <div className="flex flex-col min-w-0">
                   <span className="font-bold text-[15px] tracking-tight text-[var(--text-primary)] truncate">
                     StackLift
@@ -132,19 +166,19 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
                     Modernization Studio
                   </span>
                 </div>
-              )}
-            </div>
+              </div>
 
-            {/* Collapse / Expand Toggle Button */}
-            <Tooltip content={isSidebarCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar (Compact)'}>
-              <button
-                onClick={toggleSidebarCollapsed}
-                className="h-7 w-7 rounded-[var(--radius-md)] flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-hover)] transition-colors cursor-pointer shrink-0"
-              >
-                {isSidebarCollapsed ? <PanelLeft className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
-              </button>
-            </Tooltip>
-          </div>
+              {/* Collapse Toggle Button */}
+              <Tooltip content="Collapse Sidebar (Compact)">
+                <button
+                  onClick={toggleSidebarCollapsed}
+                  className="h-7 w-7 rounded-[var(--radius-md)] flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-hover)] transition-colors cursor-pointer shrink-0"
+                >
+                  <PanelLeftClose className="h-4 w-4" />
+                </button>
+              </Tooltip>
+            </div>
+          )}
 
           {/* Everbee-inspired Project Switcher Card */}
           {!isSidebarCollapsed ? (
@@ -402,16 +436,14 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
           </div>
         </div>
 
-        {/* Resizable Width Drag Handle on right border */}
-        {!isSidebarCollapsed && (
-          <div
-            onMouseDown={handleMouseDown}
-            className={`absolute top-0 right-0 w-1.5 h-full cursor-col-resize hover:bg-[var(--brand-primary)]/50 transition-colors z-20 ${
-              isResizing ? 'bg-[var(--brand-primary)]' : 'bg-transparent'
-            }`}
-            title="Drag to resize sidebar width"
-          />
-        )}
+        {/* Resizable Width Drag Handle on right border (drag to expand/collapse/resize) */}
+        <div
+          onMouseDown={handleMouseDown}
+          className={`absolute top-0 right-0 w-2 h-full cursor-col-resize hover:bg-[var(--brand-primary)]/50 transition-colors z-20 ${
+            isResizing ? 'bg-[var(--brand-primary)]' : 'bg-transparent'
+          }`}
+          title="Drag to adjust width or collapse/expand sidebar"
+        />
       </aside>
 
       {/* Main Content Area */}

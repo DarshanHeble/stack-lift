@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useRef, useEffect } from 'react';
 import { DiffEditor } from '@monaco-editor/react';
 import { Card, CardHeader, CardTitle, CardContent, Badge, Button } from '@/components/ui';
 import { parseUnifiedDiff, getLanguageForFile } from '@/lib/diffParser';
@@ -14,6 +14,7 @@ export const DiffViewer: React.FC<DiffViewerProps> = ({ diffContent, changedFile
   const isDarkMode = useUIStore((s) => s.isDarkMode);
   const [selectedFileIndex, setSelectedFileIndex] = useState(0);
   const [renderSideBySide, setRenderSideBySide] = useState(true);
+  const diffEditorRef = useRef<any>(null);
 
   const activeFile = changedFiles[selectedFileIndex] || changedFiles[0] || 'pom.xml';
   const language = useMemo(() => getLanguageForFile(activeFile), [activeFile]);
@@ -21,6 +22,19 @@ export const DiffViewer: React.FC<DiffViewerProps> = ({ diffContent, changedFile
     () => parseUnifiedDiff(diffContent),
     [diffContent]
   );
+
+  // Safely clean up editor models before unmount to prevent Monaco TextModel disposed error
+  useEffect(() => {
+    return () => {
+      if (diffEditorRef.current) {
+        try {
+          diffEditorRef.current.setModel(null);
+        } catch {
+          // Ignore any teardown exceptions
+        }
+      }
+    };
+  }, []);
 
   return (
     <Card className="p-0 overflow-hidden flex flex-col h-full border-[var(--border-default)] bg-[var(--surface-canvas)]">
@@ -70,6 +84,11 @@ export const DiffViewer: React.FC<DiffViewerProps> = ({ diffContent, changedFile
           original={originalText}
           modified={modifiedText}
           theme={isDarkMode ? 'vs-dark' : 'vs'}
+          keepCurrentOriginalModel={true}
+          keepCurrentModifiedModel={true}
+          onMount={(editor) => {
+            diffEditorRef.current = editor;
+          }}
           options={{
             readOnly: true,
             renderSideBySide,
