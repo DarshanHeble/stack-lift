@@ -11,6 +11,10 @@ export function useJobPlanQuery(jobId?: string | null) {
     queryKey: planKeys.plan(jobId || ''),
     queryFn: () => plansApi.getByJobId(jobId!),
     enabled: Boolean(jobId),
+    retry: (failureCount, error: any) => {
+      if (error?.response?.status === 404 || error?.status === 404) return false;
+      return failureCount < 2;
+    },
   });
 }
 
